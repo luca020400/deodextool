@@ -7,5 +7,6 @@ read API
 for l in `ls odex/*.odex | sed "s/.odex//"`; do java -jar -Duser.language=en oat2dex.jar $l.odex $l.dex; done
 for l in `ls odex/*.odex | sed "s/.odex//"`; do java -jar baksmali.jar -a $API -x $l.dex -o $l; done
 for l in `ls odex/*.odex | sed "s/.odex//"`; do a=`echo $l | sed "s/odex//"` && mkdir -p classes_dex/$a && java -jar smali.jar -a 21 $l -o classes_dex/$a/classes.dex; done
+for l in `ls odex/*.odex | sed "s/.odex//"`; do rm -rf $l; done
 
 echo "Done"
