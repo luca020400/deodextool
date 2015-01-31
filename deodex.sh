@@ -19,10 +19,13 @@ echo "classex.dex injected"
 echo
 }
 
+cleanup () {
+rm -rf tmp
+}
+
 echo "Every *.apk and *.odex in odexed folder will be deodex and the clesses.dex will be injected into the *.apk"
 echo -ne "Enter API level and press enter : "
 read API
-echo
 for l in `ls odex/*.odex | sed "s/.odex//"`; do dedeox $l && inject $l; done > /dev/null 2>&1
-echo
+cleanup
 echo "Done"
