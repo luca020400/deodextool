@@ -7,7 +7,8 @@ Commands
 
 ```bash
 mkdir odexed
-cp *.odex odexed/.
 cp *.apk odexed/.
+cp *.jar odexed/.
+cp *.odex odexed/.
 ./deodex.sh
 ```
