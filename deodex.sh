@@ -37,5 +37,5 @@ echo -ne "Enter API level and press enter : "
 read API
 for l in `ls odexed/*.apk | sed "s/.apk//"`; do dedeox $l && inject_apk $l; done > /dev/null 2>&1
 for l in `ls odexed/*.jar | sed "s/.jar//"`; do dedeox $l && inject_jar $l; done > /dev/null 2>&1
-#cleanup
+cleanup
 echo "Done"
