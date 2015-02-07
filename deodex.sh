@@ -2,10 +2,11 @@
 
 dedeox () {
 a=`echo $1 | sed "s/odexed//"`
+mkdir -p tmp/$a
 echo "Dedeoxing $a.apk/jar"
 java -jar -Duser.language=en oat2dex.jar $1.odex tmp/$a.dex > /dev/null 2>&1
 java -jar baksmali.jar -a $API -x tmp/$a.dex -o tmp/$a
-mkdir -p tmp/$a && java -jar smali.jar -a 21 tmp/$a -o tmp/$a/classes.dex
+java -jar smali.jar -a 21 tmp/$a -o tmp/$a/classes.dex
 echo "$1.apk classes.dex created"
 echo
 }
