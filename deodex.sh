@@ -1,33 +1,37 @@
 #!/bin/bash
 
+ver="2.0"
+
 dedeox () {
 a=`echo $1 | sed "s/odexed\///"`
 mkdir -p tmp/$a
-echo "Dedeoxing $a.apk/jar"
+if [ -f $1.apk ]; then
+    echo "Dedeoxing $a.apk"
+elif [ -f $1.jar ]; then
+    echo "Dedeoxing $a.jar"
+fi
 java -jar -Duser.language=en oat2dex.jar $1.odex tmp/$a.dex > /dev/null 2>&1
-java -jar baksmali.jar -a $API -x tmp/$a.dex -o tmp/$a
+java -jar baksmali.jar -a 21 -x tmp/$a.dex -o tmp/$a
 java -jar smali.jar -a 21 tmp/$a -o tmp/$a/classes.dex
-echo "$a.apk classes.dex created"
+if [ -f $1.apk ]; then
+    echo "$a.apk classes.dex created"
+elif [ -f $1.jar ]; then
+    echo "$a.jar classes.dex created"
+fi
 echo
 }
 
 inject_apk () {
 a=`echo $1 | sed "s/odexed\///"`
-echo "Injecting $a classex.dex into $a.apk"
-cp $1.apk deodexed/.
-zip -r deodexed/$a.apk tmp/$a/classes.dex
-echo "classex.dex injected"
-echo
-}
-
-inject_jar () {
-a=`echo $1 | sed "s/odexed\///"`
-mkdir -p deodexed/
-echo "Injecting $a classex.dex into $a.jar"
-cp $1.jar deodexed/.
-cd tmp/$a/
-zip -r ../../deodexed/$a.jar classes.dex
-cd ../..
+if [ -f $1.apk ]; then
+    echo "Injecting $a classex.dex into $a.apk"
+    cp $1.apk deodexed/.
+    zip -r deodexed/$a.apk tmp/$a/classes.dex
+elif [ -f $1.jar ]; then
+    echo "Injecting $a classex.dex into $a.jar"
+    cp $1.jar deodexed/.
+    zip -r deodexed/$a.jar tmp/$a/classes.dex
+fi
 echo "classex.dex injected"
 echo
 }
@@ -36,10 +40,9 @@ cleanup () {
 rm -rf tmp
 }
 
+echo "Dedeox tool by @luca020400 ver $ver"
+echo "It supports only LOLLIPOP"
 echo "Every *.apk/*.jar and *.odex in odexed folder will be deodex and the clesses.dex will be injected into the *.apk/*.jar"
-echo -ne "Enter API level and press enter : "
-read API
-for l in `ls odexed/*.apk | sed "s/.apk//"`; do dedeox $l && inject_apk $l; done
-for l in `ls odexed/*.jar | sed "s/.jar//"`; do dedeox $l && inject_jar $l; done
+for l in `ls odexed/*.odex | sed "s/.odex//"`; do dedeox $l && inject $l; done
 cleanup
 echo "Done"
