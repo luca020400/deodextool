@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ver="2.0"
+ver="2.1"
 
 dedeox () {
 a=`echo $1 | sed "s/odexed\///"`
@@ -21,16 +21,21 @@ fi
 echo
 }
 
-inject_apk () {
+inject () {
 a=`echo $1 | sed "s/odexed\///"`
+mkdir -p deodexed
 if [ -f $1.apk ]; then
     echo "Injecting $a classex.dex into $a.apk"
     cp $1.apk deodexed/.
-    zip -r deodexed/$a.apk tmp/$a/classes.dex
+    cd tmp/$a
+    zip -r ../../deodexed/$a.apk classes.dex
+    cd ../../
 elif [ -f $1.jar ]; then
     echo "Injecting $a classex.dex into $a.jar"
     cp $1.jar deodexed/.
-    zip -r deodexed/$a.jar tmp/$a/classes.dex
+    cd tmp/$a
+    zip -r ../../deodexed/$a.jar classes.dex
+    cd ../../
 fi
 echo "classex.dex injected"
 echo
